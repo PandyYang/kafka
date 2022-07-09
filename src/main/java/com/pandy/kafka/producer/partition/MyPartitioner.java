@@ -1,4 +1,4 @@
-package com.pandy.kafka.producer;
+package com.pandy.kafka.producer.partition;
 
 import org.apache.kafka.clients.producer.Partitioner;
 import org.apache.kafka.common.Cluster;
@@ -16,6 +16,7 @@ public class MyPartitioner implements Partitioner {
         String msgValues = o1.toString();
 
         int partition;
+
         if (msgValues.contains("pandy")) {
             partition = 0;
         } else {

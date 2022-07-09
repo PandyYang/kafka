@@ -1,4 +1,4 @@
-package com.pandy.kafka.producer;
+package com.pandy.kafka.producer.partition;
 
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -8,6 +8,8 @@ import java.util.Properties;
 /**
  * @author: Pandy
  * @create: 2022/6/12
+ *
+ * 自定义分区器
  **/
 public class CustomerProducerCallbackPartition {
 
@@ -22,13 +24,13 @@ public class CustomerProducerCallbackPartition {
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
         // 关联自定义分区器
-        properties.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, "com.pandy.kafka.producer.MyPartitioner");
+        properties.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, "com.pandy.kafka.producer.partition.MyPartitioner");
 
         // 1.创建生产者对象
         KafkaProducer<String, String> kafkaProducer = new KafkaProducer<>(properties);
         // 2.发送数据
-        for (int i = 0; i < 500; i++) {
-            kafkaProducer.send(new ProducerRecord<>("first","hello" + i), new Callback() {
+        for (int i = 0; i < 10; i++) {
+            kafkaProducer.send(new ProducerRecord<>("first", "pandy" + i), new Callback() {
 
                 /**
                  * 发送后的回调函数
@@ -41,6 +43,7 @@ public class CustomerProducerCallbackPartition {
                 }
             });
         }
+
         // 3 关闭连接
         kafkaProducer.close();
     }
