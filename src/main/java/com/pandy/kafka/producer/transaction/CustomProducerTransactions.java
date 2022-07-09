@@ -24,6 +24,7 @@ public class CustomProducerTransactions {
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
+        // 必须指定事务id
         properties.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, "transactional_id_01");
 
         // 1.创建生产者对象

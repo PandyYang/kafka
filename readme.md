@@ -217,3 +217,49 @@ properties.put(ProducerConfig.RETRIES_CONFIG, 3);
 开启参数 enable.idempotence 默认为 true，false 关闭。
 
 ## 事务的保证
+Producer 在使用事务功能前，必须先
+自定义一个唯一的 transactional.id。有
+了 transactional.id，即使客户端挂掉了，
+它重启后也能继续处理未完成的事务.
+
+```java
+// 必须指定事务id
+    properties.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, "transactional_id_01");
+
+    // 1.创建生产者对象
+    KafkaProducer<String, String> kafkaProducer = new KafkaProducer<>(properties);
+
+    kafkaProducer.initTransactions();
+
+    kafkaProducer.beginTransaction();
+    try {
+        // 2.发送数据
+        for (int i = 0; i < 500; i++) {
+
+            // 同步发送 get就是等待future调用后的结果
+            kafkaProducer.send(new ProducerRecord<>("first", "pandy" + i)).get();
+        }
+        System.out.println("i = " + 1/0);
+        kafkaProducer.commitTransaction();
+    }catch (Exception e) {
+        kafkaProducer.abortTransaction();
+    } finally {
+        // 3 关闭连接
+        kafkaProducer.close();
+    }
+```
+
+## 数据有序性
+单分区内，有序（有条件的，详见下节）；
+多分区，分区与分区间无序；
+
+1. kafka在1.x版本之前保证数据单分区有序，条件如下：
+max.in.flight.requests.per.connection=1（不需要考虑是否开启幂等性）。
+缓存队列就放1个,绝对有序.
+2. kafka在1.x及以后版本保证数据单分区有序，条件如下：
+   - 开启幂等性
+max.in.flight.requests.per.connection需要设置小于等于5。
+   - 未开启幂等性
+max.in.flight.requests.per.connection需要设置为1。
+原因说明：因为在kafka1.x以后，启用幂等后，kafka服务端会缓存producer发来的最近5个request的元数据，
+故无论如何，都可以保证最近5个request的数据都是有序的。
