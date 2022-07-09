@@ -9,9 +9,9 @@ import java.util.Properties;
  * @author: Pandy
  * @create: 2022/6/12
  *
- * 未指定分区, 未指定自定义分区, 对key求模
+ * 指定分区器
  **/
-public class CustomerProducerCallbackPartition2 {
+public class CustomProducerCallbackPartition3 {
 
     public static void main(String[] args) {
 
@@ -30,7 +30,7 @@ public class CustomerProducerCallbackPartition2 {
         KafkaProducer<String, String> kafkaProducer = new KafkaProducer<>(properties);
         // 2.发送数据
         for (int i = 0; i < 10; i++) {
-            kafkaProducer.send(new ProducerRecord<>("first", "b", "xxx" + i), new Callback() {
+            kafkaProducer.send(new ProducerRecord<>("first", 1, "", "pandy" + i), new Callback() {
 
                 /**
                  * 发送后的回调函数

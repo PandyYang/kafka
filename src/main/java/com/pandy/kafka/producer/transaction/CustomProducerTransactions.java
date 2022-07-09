@@ -12,7 +12,7 @@ import java.util.concurrent.ExecutionException;
  * @author: Pandy
  * @create: 2022/6/12
  **/
-public class CustomerProducerTransactions {
+public class CustomProducerTransactions {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
 

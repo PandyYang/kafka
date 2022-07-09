@@ -1,17 +1,20 @@
 package com.pandy.kafka.producer;
 
-import org.apache.kafka.clients.producer.*;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author: Pandy
  * @create: 2022/6/12
  **/
-public class CustomerProducerCallback {
+public class CustomProducerSync {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
 
         // 配置
         Properties properties = new Properties();
@@ -25,18 +28,9 @@ public class CustomerProducerCallback {
         KafkaProducer<String, String> kafkaProducer = new KafkaProducer<>(properties);
         // 2.发送数据
         for (int i = 0; i < 5; i++) {
-            kafkaProducer.send(new ProducerRecord<>("first", "pandy" + i), new Callback() {
 
-                /**
-                 * 发送后的回调函数
-                 * @param recordMetadata
-                 * @param e
-                 */
-                @Override
-                public void onCompletion(RecordMetadata recordMetadata, Exception e) {
-                    System.out.println("主题" + recordMetadata.topic() + "分区" + recordMetadata.partition());
-                }
-            });
+            // 同步发送 get就是等待future调用后的结果
+            kafkaProducer.send(new ProducerRecord<>("first", "pandy" + i)).get();
         }
         // 3 关闭连接
         kafkaProducer.close();

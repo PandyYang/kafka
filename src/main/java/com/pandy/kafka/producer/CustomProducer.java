@@ -11,7 +11,7 @@ import java.util.Properties;
  * @author: Pandy
  * @create: 2022/6/12
  **/
-public class CustomerProducer {
+public class CustomProducer {
 
     public static void main(String[] args) {
 

@@ -11,7 +11,7 @@ import java.util.Properties;
  *
  * 自定义分区器
  **/
-public class CustomerProducerCallbackPartition {
+public class CustomProducerCallbackPartition {
 
     public static void main(String[] args) {
 
