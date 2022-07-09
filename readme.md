@@ -195,7 +195,25 @@ Leader保持同步的Follower+Leader集合(leader：0，isr:0,1,2)。
 ### 可靠性总结
 1. acks=0，生产者发送过来数据就不管了，可靠性差，效率高；
 2. acks=1，生产者发送过来数据Leader应答，可靠性中等，效率中等；
-3. acks=-1，生产者发送过来数据Leader和ISR队列里面所有Follwer应答，可靠性高，效率低；
+3. acks=-1，生产者发送过来数据Leader和ISR队列里面所有Follower应答，可靠性高，效率低；
 
 在生产环境中，acks=0很少使用；acks=1，一般用于传输普通日志，允许丢个别数据；acks=-1，一般用于传输和钱相关的数据，
 对可靠性要求比较高的场景。
+
+还可以重新配置重试次数, 其默认为int最大值
+```java
+properties.put(ProducerConfig.RETRIES_CONFIG, 3);
+```
+
+## 幂等性的保证
+幂等性就是指Producer不论向Broker发送多少次重复数据，Broker端都只会持久化一条，保证了不重复。
+精确一次（Exactly Once） = 幂等性 + 至少一次（ ack=-1 + 分区副本数>=2 + ISR最小副本数量>=2） 。
+
+重复数据的判断标准：具有<PID, Partition, SeqNumber>相同主键的消息提交时，Broker只会持久化一条。其
+中PID是Kafka每次重启都会分配一个新的；Partition 表示分区号；Sequence Number是单调自增的。
+所以幂等性只能保证的是在单分区单会话内不重复。
+
+### 如何使用幂等性
+开启参数 enable.idempotence 默认为 true，false 关闭。
+
+## 事务的保证
