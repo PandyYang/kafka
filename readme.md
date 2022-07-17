@@ -1,5 +1,9 @@
 # Kafka简明教程
 本教程基于三台kafka服务器，分别为master，node1，node2请确保上面已经安装了zk集群。
+我已经将三个集群的镜像打包，开箱即用：
+链接：https://pan.baidu.com/s/1MQAI4JfqMRIarDkUwa648Q?pwd=5j0x 
+提取码：5j0x 
+
 ### 首先启动kafka
 ```shell
 cd ~ && ./kafka/bin/kafka-server-start.sh -daemon /root/kafka/config/server.properties
